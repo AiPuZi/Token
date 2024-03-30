@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const tokenForm = document.getElementById('tokenForm');
+    const connectWalletButton = document.getElementById('connectWallet'); // 连接钱包的按钮
 
     tokenForm.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -43,8 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const walletAddressElement = document.getElementById('walletAddress'); // 显示钱包地址的元素
-
     // 检测 Phantom 钱包是否已安装
     const isPhantomInstalled = () => {
         return window.solana && window.solana.isPhantom;
@@ -55,34 +54,29 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isPhantomInstalled()) {
             try {
                 const response = await window.solana.connect();
-                updateWalletAddress(response.publicKey.toString());
-                walletAddressElement.addEventListener('click', disconnectWallet);
+                updateConnectWalletButton(response.publicKey.toString());
+                connectWalletButton.removeEventListener('click', connectWallet);
+                connectWalletButton.addEventListener('click', disconnectWallet);
             } catch (error) {
                 console.error('Wallet connection denied:', error.message);
-                updateWalletAddress('Connection denied');
             }
         } else {
             alert('Phantom Wallet not found! Please install it and try again.');
-            updateWalletAddress('Phantom Wallet not found');
         }
     };
 
     // 断开钱包连接
     const disconnectWallet = async () => {
         await window.solana.disconnect();
-        updateWalletAddress('');
-        walletAddressElement.removeEventListener('click', disconnectWallet);
+        updateConnectWalletButton('Connect Wallet');
+        connectWalletButton.removeEventListener('click', disconnectWallet);
+        connectWalletButton.addEventListener('click', connectWallet);
     };
 
-    const connectWalletButton = document.getElementById('connectWallet');
+    // 更新连接钱包按钮的文本为钱包地址或“Connect Wallet”
+    const updateConnectWalletButton = (text) => {
+        connectWalletButton.textContent = text;
+    };
+
     connectWalletButton.addEventListener('click', connectWallet);
-
-    // 更新钱包地址显示
-    const updateWalletAddress = (address) => {
-        walletAddressElement.textContent = address;
-        walletAddressElement.style.display = address ? 'block' : 'none';
-    };
-
-    // 初始化时不显示钱包地址
-    updateWalletAddress('');
 });
