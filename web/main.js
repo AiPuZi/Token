@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const tokenForm = document.getElementById('tokenForm'); // 确保这是您表单的ID
+    const tokenForm = document.getElementById('tokenForm');
 
     tokenForm.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
             disableMintAuthority
         };
 
-        // 发送请求到您的后端服务
+        // 发送请求到后端服务
         try {
-            const response = await fetch('/api/create-token', { // 确保这是您后端创建代币的正确URL
+            const response = await fetch('/api/create-token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -35,34 +35,54 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const result = await response.json();
                 alert('Token created successfully. Transaction ID: ' + result.transactionId);
-                // 处理成功响应
             } else {
                 throw new Error('Failed to create token.');
             }
         } catch (error) {
             alert('Error: ' + error.message);
-            // 处理错误
         }
     });
 
-    // 新增的连接钱包功能
+    const walletAddressElement = document.getElementById('walletAddress'); // 显示钱包地址的元素
+
+    // 检测 Phantom 钱包是否已安装
     const isPhantomInstalled = () => {
         return window.solana && window.solana.isPhantom;
     };
 
+    // 连接到 Phantom 钱包
     const connectWallet = async () => {
         if (isPhantomInstalled()) {
             try {
                 const response = await window.solana.connect();
-                console.log('Connected with Public Key:', response.publicKey.toString());
+                updateWalletAddress(response.publicKey.toString());
+                walletAddressElement.addEventListener('click', disconnectWallet);
             } catch (error) {
                 console.error('Wallet connection denied:', error.message);
+                updateWalletAddress('Connection denied');
             }
         } else {
             alert('Phantom Wallet not found! Please install it and try again.');
+            updateWalletAddress('Phantom Wallet not found');
         }
+    };
+
+    // 断开钱包连接
+    const disconnectWallet = async () => {
+        await window.solana.disconnect();
+        updateWalletAddress('');
+        walletAddressElement.removeEventListener('click', disconnectWallet);
     };
 
     const connectWalletButton = document.getElementById('connectWallet');
     connectWalletButton.addEventListener('click', connectWallet);
+
+    // 更新钱包地址显示
+    const updateWalletAddress = (address) => {
+        walletAddressElement.textContent = address;
+        walletAddressElement.style.display = address ? 'block' : 'none';
+    };
+
+    // 初始化时不显示钱包地址
+    updateWalletAddress('');
 });
