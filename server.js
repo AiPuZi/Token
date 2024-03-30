@@ -1,1 +1,36 @@
-Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYm9keVBhcnNlciA9IHJlcXVpcmUoJ2JvZHktcGFyc2VyJyk7CmNvbnN0IGNvcnMgPSByZXF1aXJlKCdjb3JzJyk7CmNvbnN0IHBhdGggPSByZXF1aXJlKCdwYXRoJyk7CgovLyDor7vlj5bphY3nva7mlofku7YKY29uc3QgY29uZmlnID0gcmVxdWlyZSgnLi9jb25maWcuanNvbicpOwoKY29uc3QgYXBwID0gZXhwcmVzcygpOwphcHAudXNlKGNvcnMoKSk7CmFwcC51c2UoYm9keVBhcnNlci5qc29uKCkpOwoKLy8gU2VydmUgc3RhdGljIGZpbGVzIGZyb20gdGhlICJ3ZWIiIGRpcmVjdG9yeQphcHAudXNlKGV4cHJlc3Muc3RhdGljKHBhdGguam9pbigkX19kaXJuYW1lLCAnd2ViJykpKTsKCi8vIFlvdXIgZXhpc3RpbmcgQVBJIHJvdXRlcyBhbmQgbWlkZGxld2FyZQovLyAuLi4KCmNvbnN0IFBPUlQgPSBjb25maWcucG9ydCB8fCAzMDAwOwphcHAubGlzdGVuKFBPUlQsICgpID0+IHsKICAgIGNvbnNvbGUubG9nKGBTZXJ2ZXIgcnVubmluZyBvbiBwb3J0ICR7UE9SVH1gKTsKfSk7
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
+
+// 读取配置文件
+const config = require('./config.json');
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+// 从 "web" 目录提供静态文件
+app.use(express.static(path.join(__dirname, 'web')));
+
+app.post('/api/create-token', async (req, res) => {
+    try {
+        // 模拟创建代币的逻辑，实际上您需要调用智能合约
+        console.log('Creating token with the following data:', req.body);
+
+        // 假设的响应数据
+        const response = {
+            transactionId: 'simulated_transaction_id'
+        };
+
+        res.json(response);
+    } catch (error) {
+        console.error('Error creating token:', error);
+        res.status(500).send('Failed to create token');
+    }
+});
+
+const PORT = config.port || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
