@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/AiPuZi/Token/issues"
   },
-  "homepage": "https://github.com/AiPuZi/Token#readme"
+  "homepage": "https://github.com/AiPuZi/Token#readme",
+  "dependencies": {
+    "@solana/web3.js": "^1.30.0"
+  }
 }
