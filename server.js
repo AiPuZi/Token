@@ -12,19 +12,53 @@ app.use(bodyParser.json());
 app.use(express.static('web'));
 
 app.post('/api/create-token', async (req, res) => {
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+    const connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
     const payer = Keypair.generate(); // Generate a new keypair for the payer
 
     try {
-        // omitted code for brevity
+        // Determine the minimum balance needed to exempt the account from rent
+        const minimumBalanceForRentExemptMint = await getMinimumBalanceForRentExemptMint(connection);
 
-        // After the token is successfully created
+        // Create a new mint account
+        const mintAccount = Keypair.generate();
+        const mintPublicKey = mintAccount.publicKey;
+        const tokenTransaction = new Transaction();
+
+        // Add an instruction to create the new mint account
+        tokenTransaction.add(
+            SystemProgram.createAccount({
+                fromPubkey: payer.publicKey,
+                newAccountPubkey: mintPublicKey,
+                lamports: minimumBalanceForRentExemptMint,
+                space: MintLayout.span,
+                programId: TOKEN_PROGRAM_ID,
+            })
+        );
+
+        // Add an instruction to initialize the mint
+        tokenTransaction.add(
+            createInitializeMintInstruction(
+                mintPublicKey, // mint pubkey
+                9, // decimals
+                payer.publicKey, // mint authority
+                null, // freeze authority (if not applicable)
+                TOKEN_PROGRAM_ID // token program id
+            )
+        );
+
+        // Sign and send the transaction
+        const transactionId = await sendAndConfirmTransaction(
+            connection,
+            tokenTransaction,
+            [payer, mintAccount], // Signers
+            { commitment: 'confirmed' }
+        );
+
         // Respond with the transaction ID
-        const transactionId = 'simulated-transaction-id';
         res.status(200).json({ success: true, message: 'Token created successfully.', transactionId });
     } catch (error) {
         console.error('Error creating token:', error);
-        res.status(500).json({ success: false, message: 'Failed to create token.' });
+        res.status(500).json({ success: false, message: 'Failed to create token.', error: error.message });
     }
 });
 
