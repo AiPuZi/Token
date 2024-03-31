@@ -58,7 +58,7 @@ app.post('/api/create-token', async (req, res) => {
         res.status(200).json({ success: true, message: 'Token created successfully.', transactionId });
     } catch (error) {
         console.error('Error creating token:', error);
-        res.status(500).json({ success: false, message: 'Failed to create token.', error: error.message });
+        res.status(500).json({ success: false, message: 'Failed to create token.', error: error.message, stack: error.stack });
     }
 });
 
