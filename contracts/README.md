@@ -1,1 +1,0 @@
-Solana smart contracts for the token will be placed here.

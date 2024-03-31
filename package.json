@@ -1,25 +1,16 @@
 {
-  "name": "token",
+  "name": "token-project",
   "version": "1.0.0",
-  "description": "A project for managing tokens",
+  "description": "Solana token management project",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AiPuZi/Token.git"
-  },
-  "author": "Your Name",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/AiPuZi/Token/issues"
-  },
-  "homepage": "https://github.com/AiPuZi/Token#readme",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@solana/web3.js": "^1.30.0",
-    "@solana/spl-token": "^0.1.8",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "@solana/web3.js": "^1.13.0",
+    "@solana/spl-token": "^0.1.8"
   }
 }
