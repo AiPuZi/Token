@@ -1,28 +1,50 @@
 const web3 = require('@solana/web3.js');
 const splToken = require('@solana/spl-token');
 
-async function createToken(connection, payer, mintAuthorityPubkey, freezeAuthorityPubkey, decimals) {
-  // 创建Token Mint
-  const mint = await splToken.createMint(
+async function createToken(connection, payer, mintAuthorityPublicKey, freezeAuthorityPublicKey, tokenName, tokenSymbol, totalSupply, decimals, metadataUri) {
+  // Create a new mint
+  const mint = await splToken.Token.createMint(
     connection,
     payer,
-    mintAuthorityPubkey,
-    freezeAuthorityPubkey,
-    decimals
+    mintAuthorityPublicKey,
+    freezeAuthorityPublicKey,
+    decimals,
+    splToken.TOKEN_PROGRAM_ID
   );
 
-  // 创建Token Account
-  const tokenAccount = await splToken.createAccount(
-    connection,
-    payer,
-    mint,
+  // Create the associated token account for the payer
+  const tokenAccount = await mint.getOrCreateAssociatedAccountInfo(
     payer.publicKey
   );
 
-  // 返回创建的Token Mint和Token Account信息
+  // Minting the initial supply to the payer's token account
+  await mint.mintTo(
+    tokenAccount.address,
+    payer,
+    [],
+    totalSupply
+  );
+
+  // Set the token account's metadata using the Metadata program (if required)
+  // TODO: Add logic to set metadata using the Metaplex token metadata standard
+
+  // Disable further minting if the mint authority is null
+  if (mintAuthorityPublicKey === null) {
+    await mint.setAuthority(
+      mint.publicKey,
+      null,
+      'MintTokens',
+      payer,
+      []
+    );
+  }
+
   return {
-    mint,
-    tokenAccount
+    tokenName,
+    tokenSymbol,
+    mint: mint.publicKey.toString(),
+    tokenAccount: tokenAccount.address.toString(),
+    metadataUri
   };
 }
 
