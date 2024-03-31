@@ -1,13 +1,15 @@
 const web3 = require('@solana/web3.js');
 const splToken = require('@solana/spl-token');
 
-async function mintTokens(connection, payer, mint, destination, amount) {
+async function mintTokens(mint, destination, amount, authority) {
+  const connection = new web3.Connection(web3.clusterApiUrl('devnet'), 'confirmed');
   await mint.mintTo(
     destination,
-    payer,
+    authority,
     [],
     amount
   );
+  console.log(`Minted ${amount} tokens to ${destination.toString()}`);
 }
 
 module.exports = { mintTokens };
