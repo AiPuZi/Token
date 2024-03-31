@@ -1,1 +1,0 @@
-Tests for the Solana smart contracts will be located here.
