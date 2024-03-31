@@ -20,5 +20,6 @@
   "dependencies": {
     "@solana/web3.js": "^1.30.0",
     "@solana/spl-token": "^0.1.8"
+    "express": "^4.17.1" // 确保使用最新的 express 版本
   }
 }
