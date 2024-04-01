@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 发送请求创建代币
         try {
-            const response = await fetch('https://token-snowy.vercel.app/api/create-token', {
+            const response = await fetch('https://token-eight-iota.vercel.app/api/create-token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
