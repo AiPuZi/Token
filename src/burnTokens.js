@@ -3,8 +3,10 @@ const splToken = require('@solana/spl-token');
 
 async function burnTokens(mint, source, amount, authority) {
   const connection = new web3.Connection(web3.clusterApiUrl('devnet'), 'confirmed');
-  await mint.burn(
+  await splToken.burn(
+    connection,
     source,
+    mint,
     authority,
     [],
     amount
