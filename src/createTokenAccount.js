@@ -1,10 +1,16 @@
 const web3 = require('@solana/web3.js');
 const splToken = require('@solana/spl-token');
 
-async function createTokenAccount(mint, owner) {
-  const connection = new web3.Connection(web3.clusterApiUrl('devnet'), 'confirmed');
-  const tokenAccount = await mint.createAccount(owner);
-  console.log(`Token account created: ${tokenAccount.toBase58()}`);
+async function createTokenAccount(connection, payer, mintPublicKey, ownerPublicKey) {
+  // Create a new token account for the owner
+  const tokenAccount = await splToken.getOrCreateAssociatedTokenAccount(
+    connection,
+    payer,
+    mintPublicKey,
+    ownerPublicKey
+  );
+
+  console.log(`Token account created: ${tokenAccount.address.toBase58()}`);
   return tokenAccount;
 }
 
