@@ -4,9 +4,8 @@ const splToken = require('@solana/spl-token');
 async function disableMintAuthority(connection, payer, mint) {
   const transactionSignature = await splToken.disableMintAuthority(
     connection,
-    payer,
-    mint,
-    payer.publicKey // Mint authority, typically the payer
+    payer.publicKey, // The mint public key
+    payer, // The authority's signer (payer in this case)
   );
 
   console.log(`Disable Mint Authority Transaction: ${transactionSignature}`);
