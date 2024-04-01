@@ -4,13 +4,13 @@ const splToken = require('@solana/spl-token');
 async function createToken(connection, payer, mintAuthorityPublicKey, freezeAuthorityPublicKey, tokenName, tokenSymbol, totalSupply, decimals, metadataUri) {
   // Create a new mint
   const mint = await splToken.Token.createMint(
-    connection,
-    payer,
-    mintAuthorityPublicKey,
-    freezeAuthorityPublicKey,
-    decimals,
-    splToken.TOKEN_PROGRAM_ID
-  );
+  connection,
+  payer,
+  mintAuthorityPublicKey || null, // Set to null if not provided
+  freezeAuthorityPublicKey || null, // Set to null if not provided
+  decimals,
+  splToken.TOKEN_PROGRAM_ID
+);
 
   // Create the associated token account for the payer
   const tokenAccount = await splToken.getOrCreateAssociatedTokenAccount(
