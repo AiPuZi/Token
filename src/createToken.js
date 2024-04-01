@@ -13,15 +13,20 @@ async function createToken(connection, payer, mintAuthorityPublicKey, freezeAuth
   );
 
   // Create the associated token account for the payer
-  const tokenAccount = await mint.getOrCreateAssociatedAccountInfo(
+  const tokenAccount = await splToken.getOrCreateAssociatedTokenAccount(
+    connection,
+    payer,
+    mint.publicKey,
     payer.publicKey
   );
 
   // Minting the initial supply to the payer's token account
-  await mint.mintTo(
+  await splToken.mintTo(
+    connection,
+    payer,
+    mint.publicKey,
     tokenAccount.address,
     payer,
-    [],
     totalSupply
   );
 
@@ -30,12 +35,13 @@ async function createToken(connection, payer, mintAuthorityPublicKey, freezeAuth
 
   // Disable further minting if the mint authority is null
   if (mintAuthorityPublicKey === null) {
-    await mint.setAuthority(
+    await splToken.setAuthority(
+      connection,
+      payer,
       mint.publicKey,
-      null,
       'MintTokens',
       payer,
-      []
+      null
     );
   }
 
