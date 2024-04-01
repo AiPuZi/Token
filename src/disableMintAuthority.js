@@ -2,13 +2,17 @@ const web3 = require('@solana/web3.js');
 const splToken = require('@solana/spl-token');
 
 async function disableMintAuthority(connection, payer, mint) {
-  await mint.setAuthority(
-    mint.publicKey,
-    null,
-    'MintTokens',
+  const transactionSignature = await splToken.disableMintAuthority(
+    connection,
     payer,
-    []
+    mint,
+    payer.publicKey // Mint authority, typically the payer
   );
+
+  console.log(`Disable Mint Authority Transaction: ${transactionSignature}`);
 }
 
-module.exports = { disableMintAuthority };
+// 示例使用
+const connection = new web3.Connection(web3.clusterApiUrl('devnet'));
+// 确保以下参数是正确的：payer, mint
+// disableMintAuthority(connection, payer, mint);
