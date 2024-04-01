@@ -1,3 +1,8 @@
+const web3 = require('@solana/web3.js');
+
+// 创建连接到Solana主网的连接对象
+const connection = new web3.Connection(web3.clusterApiUrl('mainnet-beta'));
+
 // server.js
 // 这是主服务器文件，用于处理HTTP请求。
 const express = require('express');
