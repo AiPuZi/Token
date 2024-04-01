@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const tokenForm = document.getElementById('tokenForm');
-    const connectWalletButton = document.getElementById('connectWallet'); // 
+    const connectWalletButton = document.getElementById('connectWallet');
 
     tokenForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        // 
+        // 获取表单输入的代币信息
         const tokenName = document.getElementById('tokenName').value;
         const tokenSymbol = document.getElementById('tokenSymbol').value;
         const totalSupply = document.getElementById('totalSupply').value;
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const metadataUri = document.getElementById('metadataUri').value;
         const disableMintAuthority = document.getElementById('disableMintAuthority').checked;
 
-        // 
+        // 构建请求体
         const requestBody = {
             tokenName,
             tokenSymbol,
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             disableMintAuthority
         };
 
-        // 
+        // 发送请求创建代币
         try {
             const response = await fetch('https://token-snowy.vercel.app/api/create-token', {
                 method: 'POST',
@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const result = await response.json();
-                alert('Token created successfully. Transaction ID: ' + result.transactionId);
+                // 创建成功后，显示代币链接
+                alert('Token created successfully. Token Address: ' + result.tokenAddress);
             } else {
                 throw new Error('Failed to create token.');
             }
@@ -44,12 +45,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 
+    // 检查Phantom钱包是否已安装
     const isPhantomInstalled = () => {
         return window.solana && window.solana.isPhantom;
     };
 
-    // 
+    // 连接钱包
     const connectWallet = async () => {
         if (isPhantomInstalled()) {
             try {
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // 
+    // 断开钱包
     const disconnectWallet = async () => {
         await window.solana.disconnect();
         updateConnectWalletButton('Connect Wallet');
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         connectWalletButton.addEventListener('click', connectWallet);
     };
 
-    // 
+    // 更新钱包连接按钮的文本
     const updateConnectWalletButton = (text) => {
         connectWalletButton.textContent = text;
     };
