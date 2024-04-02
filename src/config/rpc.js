@@ -1,0 +1,1 @@
+export const RPC_ADDRESS = "https://api.mainnet-beta.solana.com";
